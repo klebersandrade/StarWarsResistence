@@ -14,7 +14,7 @@ import com.starwars.resistence.model.ReportaTraidor;
 public interface ReportaTraidorRepository extends JpaRepository<ReportaTraidor, Long> {
 	Page<ReportaTraidor> findByRebeldeId(Long rebeldeId, Pageable pageable);
 	Optional<ReportaTraidor> findByIdAndRebeldeId(Long id, Long rebeldeId);
-	
+		
 	@Query(
 			value = "SELECT count(t.*) FROM reporta_traidores t WHERE t.delator_id = ?1 AND t.rebelde_id = ?2",
 			nativeQuery = true
