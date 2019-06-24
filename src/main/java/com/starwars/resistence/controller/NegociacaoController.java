@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import com.starwars.resistence.model.Negociacao;
 import com.starwars.resistence.model.NegociacaoAdd;
 import com.starwars.resistence.model.NegociacaoItem;
 import com.starwars.resistence.model.NegociacaoItemAdd;
+import com.starwars.resistence.model.NegociacaoView;
 import com.starwars.resistence.model.ReportaTraidor;
 import com.starwars.resistence.repository.InventarioRepository;
 import com.starwars.resistence.repository.NegociacaoItemRepository;
@@ -173,5 +175,10 @@ public class NegociacaoController {
 			inv.setQuantidade(inv.getQuantidade() - ite.getQuantidade());
 			inventarioRepository.save(inv);
 		}
+	}
+	
+	@GetMapping("/rebeldes/negociacoes")
+	public List<NegociacaoView> getNegociacoes() {
+		return negociacaoRepository.getNegociacoes();
 	}
 }

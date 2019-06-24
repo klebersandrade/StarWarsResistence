@@ -1,5 +1,7 @@
 package com.starwars.resistence.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -38,4 +40,20 @@ public interface RebeldeRepository extends JpaRepository<Rebelde, Long> {
 			nativeQuery = true
 	)
 	Integer getQtdRebeldesValidos();
+	
+	@Query(
+			value = "SELECT * FROM REBELDES WHERE ID NOT IN\r\n" + 
+					"(SELECT REBELDE_ID FROM REPORTA_TRAIDORES \r\n" + 
+					"GROUP BY REBELDE_ID HAVING COUNT(REBELDE_ID) >= 3)",
+			nativeQuery = true
+	)
+	List<Rebelde> getRebeldes();
+	
+	@Query(
+			value = "SELECT * FROM REBELDES WHERE ID IN\r\n" + 
+					"(SELECT REBELDE_ID FROM REPORTA_TRAIDORES \r\n" + 
+					"GROUP BY REBELDE_ID HAVING COUNT(REBELDE_ID) >= 3)",
+			nativeQuery = true
+	)
+	List<Rebelde> getTraidores();
 }

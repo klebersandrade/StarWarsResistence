@@ -30,6 +30,8 @@ public class Rebelde extends AuditModel {
 	private Integer idade;
 	@NotNull
 	private Genero genero;
+	@Column(columnDefinition = "boolean default false")
+	private Boolean traidor;
 	
 	public Long getId() {
 		return id;
@@ -54,6 +56,12 @@ public class Rebelde extends AuditModel {
 	}
 	public void setGenero(Genero genero) {
 		this.genero = genero;
+	}
+	public Boolean getTraidor() {
+		return traidor;
+	}
+	public void setTraidor(Boolean traidor) {
+		this.traidor = traidor;
 	}
 
 }

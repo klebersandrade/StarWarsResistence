@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.starwars.resistence.exception.ResourceNotFoundException;
+import com.starwars.resistence.model.Dashboard;
 import com.starwars.resistence.model.InventarioReport;
+import com.starwars.resistence.model.ItemView;
 import com.starwars.resistence.model.Localizacao;
 import com.starwars.resistence.repository.InventarioRepository;
 import com.starwars.resistence.repository.LocalizacaoRepository;
@@ -95,7 +97,52 @@ public class RelatorioController {
 					"\" às "+simpleDateFormat.format(localizacao.getCriacaoDt())+" - Localização: ["+
 					"Latidude="+localizacao.getLatitude()+"/Logintude="+localizacao.getLongetude()+"];\n");
 		} 
-		return retorno.trim(); 
+		return retorno.trim();
 	}
 	 
+	@GetMapping("/dashboard") 
+	public Dashboard getDashBoard() {		
+		Dashboard dash = new Dashboard();
+		dash.setPorcTraidores(rebeldeRepository.getPorcTraidores());
+		dash.setPorcRebeldes(rebeldeRepository.getPorcRebeldes());
+		dash.setQtdCadastrado(rebeldeRepository.findAll().size());
+		dash.setQtdRebeldes(rebeldeRepository.getRebeldes().size());
+		dash.setQtdTraidores(rebeldeRepository.getTraidores().size());
+		
+		Integer qtdRebeldesValidos = rebeldeRepository.getQtdRebeldesValidos();
+		List<InventarioReport> recursos = inventarioRepository.getRecursosRebeldes(); 
+		for (int i = 0; i < recursos.size(); i++) { 
+			InventarioReport inv = recursos.get(i); 
+			Double media = (inv.getQuantidade() * 1.00) / (qtdRebeldesValidos);
+			ItemView invItem = new ItemView();
+			invItem.setItem(inv.getItem());
+			invItem.setQuantidade(media);
+			dash.getRecursos().add(invItem);
+		} 
+		
+		List<InventarioReport> recursos1 = inventarioRepository.getRecursosTraidores(); 
+		Integer totalPerdido = 0;
+		for (int i = 0; i < recursos1.size(); i++) { 
+			InventarioReport inv = recursos1.get(i); 
+			
+			switch (inv.getItem()) {
+			case Arma:
+				totalPerdido += 4 * inv.getQuantidade();
+				break;
+			case Municao:
+				totalPerdido += 3 * inv.getQuantidade();
+				break;
+			case Agua:
+				totalPerdido += 2 * inv.getQuantidade();
+				break;
+			case Comida:
+				totalPerdido += 1 * inv.getQuantidade();
+				break;
+			}				
+		} 
+		dash.setPontosPerdidos(totalPerdido);
+		
+		
+		return dash;
+	}
 }
